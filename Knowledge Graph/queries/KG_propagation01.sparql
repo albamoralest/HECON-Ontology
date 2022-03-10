@@ -1,0 +1,64 @@
+# DESCENDANTS - no effect
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
+PREFIX fx:   <http://sparql.xyz/facade-x/ns/>
+PREFIX xyz:  <http://sparql.xyz/facade-x/data/>
+PREFIX sct: <http://snomed.info/id/>
+PREFIX scton: <http://snomed.info/id#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX hecon: <http://kmi.open.ac.uk/conrad/ontology/hecon#>
+PREFIX ont: <http://kmi.open.ac.uk/conrad/kg/hecon/>
+PREFIX time: <http://www.w3.org/2006/time#>
+
+CONSTRUCT{
+?sctSource a hecon:Snomed .
+?sctTarget a hecon:Snomed .
+?hes a hecon:HealthEvolutionStatement ;
+    hecon:hasSctConcept ?sctTarget ;
+    prov:wasDerivedFrom ?entSource ;
+    prov:wasGeneratedBy ?entRE .
+?hes a ?eventType ;
+    hecon:hasPace ?paceType ;
+	hecon:hasMinDuration ?minDuration_IRI ;
+    hecon:hasMaxDuration ?maxDuration_IRI .
+?minDuration_IRI a time:Duration ;
+    time:numericDuration ?fValue ;
+    time:unitType ?fUnit .
+?maxDuration_IRI a time:Duration ;
+    time:numericDuration ?tValue ;
+    time:unitType ?tUnit .
+?entRE a hecon:RuleExecution ;
+    rdfs:label ?aRuleExecutionName ;
+    hecon:ruleSyntax ?ruleQuery ;
+    hecon:hasSourceSnmdConcept ?sctSource ;
+    hecon:hasTargetSnmdConcept ?sctTarget .
+?typeSource a hecon:Source ;
+    rdfs:label ?aSourceName .
+?entRE a prov:Activity ;
+    prov:used ?typeRE .
+} WHERE {
+    SERVICE <x-sparql-anything:> {
+    	 fx:properties fx:location "rawData/propagation/2021-07-12_01DescendantsNoEffectConcepts.csv" ; fx:csv.headers "true" .
+        {
+         [] 
+            xyz:snomedIdentifier ?snmdIdSource ; #snmdId
+            xyz:snomedDesIdentifier ?snmdIdTarget 
+            . 
+        } 
+        BIND ( IRI ( CONCAT (STR(sct:), STR(?snmdIdSource) ) ) AS ?sctSource ) .
+        BIND ( IRI ( CONCAT (STR(sct:), STR(?snmdIdTarget) ) ) AS ?sctTarget ) .
+		BIND ( "UNAFFECTED" AS ?eventName) .
+		BIND ( hecon:Unaffected AS ?eventType) .
+		BIND ( CONCAT (STR (ont:), STR(?snmdIdTarget), "/", STR (?eventName) ) AS ?hesKey) .
+
+		BIND ( xsd:string ( "Knowledge Extraction Data") AS ?aSourceName ) .
+		BIND ( fx:entity (ont:, fx:DigestUtils.md5Hex(?aSourceName) ) AS ?entSource) .
+		BIND ( IRI ( CONCAT (STR(ont:), STR( fx:DigestUtils.md5Hex(?hesKey)))) AS ?hes)  .
+		
+    	BIND ( concat ( "Rule 1 - ",  ?snmdIdTarget ) AS ?aRuleExecutionName ) .
+    BIND ( xsd:string ( "Descendants of Unaffected concepts") AS ?ruleQuery ) . 
+	BIND ( fx:entity (ont:, "activity/rule/", fx:DigestUtils.md5Hex(?hesKey) ) AS ?entRE) .
+	}
+    
+}

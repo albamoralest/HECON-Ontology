@@ -1,0 +1,519 @@
+@prefix : <http://kmi.open.ac.uk/conrad/HECON#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sct: <http://snomed.info/id/> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix hecon: <http://kmi.open.ac.uk/conrad/HECON#> .
+@base <http://kmi.open.ac.uk/conrad/HECON> .
+
+<http://kmi.open.ac.uk/conrad/HECON> rdf:type owl:Ontology .
+
+#################################################################
+#    Annotation properties
+#################################################################
+
+###  http://kmi.open.ac.uk/conrad/HECON#hasSnomedConcept
+hecon:hasSnomedConcept rdf:type owl:AnnotationProperty ;
+                       rdfs:range <http://snomed.info/id/138875005> .
+
+
+#################################################################
+#    Datatypes
+#################################################################
+
+###  http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+rdf:type rdf:type rdfs:Datatype .
+
+
+###  http://www.w3.org/2006/time#TemporalUnit
+<http://www.w3.org/2006/time#TemporalUnit> rdf:type rdfs:Datatype .
+
+
+#################################################################
+#    Object Properties
+#################################################################
+
+###  http://kmi.open.ac.uk/conrad/HECON#hasMaxDuration
+hecon:hasMaxDuration rdf:type owl:ObjectProperty ;
+                     rdfs:domain hecon:Progress ;
+                     rdfs:range <http://www.w3.org/2006/time#Duration> .
+
+
+###  http://kmi.open.ac.uk/conrad/HECON#hasMinDuration
+hecon:hasMinDuration rdf:type owl:ObjectProperty ;
+                     rdfs:domain hecon:Progress ;
+                     rdfs:range <http://www.w3.org/2006/time#Duration> .
+
+
+###  http://kmi.open.ac.uk/conrad/HECON#hasPace
+hecon:hasPace rdf:type owl:ObjectProperty ,
+                       owl:FunctionalProperty ;
+              rdfs:domain hecon:Progress ;
+              rdfs:range hecon:Pace .
+
+
+###  http://kmi.open.ac.uk/conrad/HECON#hasProvider
+hecon:hasProvider rdf:type owl:ObjectProperty ;
+                  rdfs:domain hecon:Source ;
+                  rdfs:range hecon:Provider .
+
+
+###  http://kmi.open.ac.uk/conrad/HECON#hasSctConcept
+hecon:hasSctConcept rdf:type owl:ObjectProperty ,
+                             owl:FunctionalProperty ;
+                    rdfs:domain hecon:HealthEvolutionStatement ;
+                    rdfs:range sct: ;
+                    rdfs:comment "A SNOMED Entity"^^rdf:type .
+
+
+###  http://kmi.open.ac.uk/conrad/HECON#hasSctSourceConcept
+hecon:hasSctSourceConcept rdf:type owl:ObjectProperty ,
+                                   owl:FunctionalProperty ;
+                          rdfs:domain hecon:RuleExecution ;
+                          rdfs:range sct: .
+
+
+###  http://kmi.open.ac.uk/conrad/HECON#hasSctTargetConcept
+hecon:hasSctTargetConcept rdf:type owl:ObjectProperty ,
+                                   owl:FunctionalProperty ;
+                          rdfs:domain hecon:RuleExecution ;
+                          rdfs:range sct: .
+
+
+###  http://www.w3.org/ns/prov#Used
+prov:Used rdf:type owl:ObjectProperty .
+
+
+###  http://www.w3.org/ns/prov#wasDerivedFrom
+prov:wasDerivedFrom rdf:type owl:ObjectProperty .
+
+
+###  http://www.w3.org/ns/prov#wasGeneratedBy
+prov:wasGeneratedBy rdf:type owl:ObjectProperty .
+
+
+#################################################################
+#    Data properties
+#################################################################
+
+###  http://kmi.open.ac.uk/conrad/HECON#agreementValue
+hecon:agreementValue rdf:type owl:DatatypeProperty ;
+                     rdfs:domain hecon:UserStudy ;
+                     rdfs:range xsd:float .
+
+
+###  http://kmi.open.ac.uk/conrad/HECON#confidenceValue
+hecon:confidenceValue rdf:type owl:DatatypeProperty ;
+                      rdfs:domain hecon:KnowledgeExtraction ;
+                      rdfs:range xsd:float .
+
+
+###  http://kmi.open.ac.uk/conrad/HECON#keName
+hecon:keName rdf:type owl:DatatypeProperty ;
+             rdfs:domain hecon:KnowledgeExtraction ;
+             rdfs:range xsd:string .
+
+
+###  http://kmi.open.ac.uk/conrad/HECON#provider
+hecon:provider rdf:type owl:DatatypeProperty ;
+               rdfs:domain hecon:Provider ;
+               rdfs:range xsd:string .
+
+
+###  http://kmi.open.ac.uk/conrad/HECON#ruleName
+hecon:ruleName rdf:type owl:DatatypeProperty ;
+               rdfs:range xsd:string .
+
+
+###  http://kmi.open.ac.uk/conrad/HECON#ruleSyntax
+hecon:ruleSyntax rdf:type owl:DatatypeProperty ;
+                 rdfs:range xsd:string .
+
+
+###  http://kmi.open.ac.uk/conrad/HECON#sentence
+hecon:sentence rdf:type owl:DatatypeProperty ;
+               rdfs:domain hecon:Source ;
+               rdfs:range xsd:string .
+
+
+###  http://kmi.open.ac.uk/conrad/HECON#sourceName
+hecon:sourceName rdf:type owl:DatatypeProperty ;
+                 rdfs:domain hecon:Source ;
+                 rdfs:range xsd:string .
+
+
+###  http://kmi.open.ac.uk/conrad/HECON#supportValue
+hecon:supportValue rdf:type owl:DatatypeProperty ;
+                   rdfs:domain hecon:KnowledgeExtraction ;
+                   rdfs:range xsd:float .
+
+
+###  http://kmi.open.ac.uk/conrad/HECON#url
+hecon:url rdf:type owl:DatatypeProperty ;
+          rdfs:domain hecon:Source ;
+          rdfs:range xsd:string .
+
+
+###  http://kmi.open.ac.uk/conrad/HECON#userStudyName
+hecon:userStudyName rdf:type owl:DatatypeProperty ;
+                    rdfs:domain hecon:UserStudy ;
+                    rdfs:range xsd:string .
+
+
+###  http://snomed.info/id/
+sct: rdf:type owl:DatatypeProperty ;
+     rdfs:domain sct: ;
+     rdfs:range xsd:anyURI .
+
+
+###  http://www.w3.org/2006/time#numericDuration
+<http://www.w3.org/2006/time#numericDuration> rdf:type owl:DatatypeProperty ;
+                                              rdfs:domain <http://www.w3.org/2006/time#Duration> ;
+                                              rdfs:range xsd:decimal .
+
+
+###  http://www.w3.org/2006/time#unitType
+<http://www.w3.org/2006/time#unitType> rdf:type owl:DatatypeProperty ;
+                                       rdfs:domain <http://www.w3.org/2006/time#Duration> ;
+                                       rdfs:range <http://www.w3.org/2006/time#TemporalUnit> .
+
+
+#################################################################
+#    Classes
+#################################################################
+
+###  http://kmi.open.ac.uk/conrad/HECON#Decline
+hecon:Decline rdf:type owl:Class ;
+              rdfs:subClassOf hecon:Progress .
+
+
+###  http://kmi.open.ac.uk/conrad/HECON#HealthEvolutionStatement
+hecon:HealthEvolutionStatement rdf:type owl:Class ;
+                               rdfs:subClassOf [ rdf:type owl:Restriction ;
+                                                 owl:onProperty prov:wasDerivedFrom ;
+                                                 owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                                                 owl:onClass hecon:Source
+                                               ] ,
+                                               [ rdf:type owl:Restriction ;
+                                                 owl:onProperty prov:wasGeneratedBy ;
+                                                 owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                                                 owl:onClass prov:Activity
+                                               ] ,
+                                               [ rdf:type owl:Restriction ;
+                                                 owl:onProperty hecon:hasSctConcept ;
+                                                 owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                                                 owl:onClass sct:
+                                               ] ;
+                               owl:disjointUnionOf ( hecon:Decline
+                                                     hecon:Improvement
+                                                     hecon:Permanent
+                                                     hecon:Unaffected
+                                                   ) ;
+                               rdfs:label "HealthEvolutionStatement" .
+
+
+###  http://kmi.open.ac.uk/conrad/HECON#Improvement
+hecon:Improvement rdf:type owl:Class ;
+                  rdfs:subClassOf hecon:Progress .
+
+
+###  http://kmi.open.ac.uk/conrad/HECON#KnowledgeExtraction
+hecon:KnowledgeExtraction rdf:type owl:Class ;
+                          rdfs:subClassOf prov:Activity .
+
+
+###  http://kmi.open.ac.uk/conrad/HECON#Pace
+hecon:Pace rdf:type owl:Class ;
+           owl:equivalentClass [ rdf:type owl:Class ;
+                                 owl:oneOf ( <http://kmi.open.ac.uk/conrad/kg/hecon/FAST>
+                                             <http://kmi.open.ac.uk/conrad/kg/hecon/MODERATE>
+                                             <http://kmi.open.ac.uk/conrad/kg/hecon/SLOW>
+                                           )
+                               ] ;
+           rdfs:label "Pace" .
+
+
+###  http://kmi.open.ac.uk/conrad/HECON#Permanent
+hecon:Permanent rdf:type owl:Class ;
+                rdfs:subClassOf hecon:HealthEvolutionStatement .
+
+
+###  http://kmi.open.ac.uk/conrad/HECON#Progress
+hecon:Progress rdf:type owl:Class ;
+               rdfs:subClassOf hecon:HealthEvolutionStatement ,
+                               [ rdf:type owl:Restriction ;
+                                 owl:onProperty hecon:hasMaxDuration ;
+                                 owl:cardinality "1"^^xsd:nonNegativeInteger
+                               ] ,
+                               [ rdf:type owl:Restriction ;
+                                 owl:onProperty hecon:hasMinDuration ;
+                                 owl:cardinality "1"^^xsd:nonNegativeInteger
+                               ] ,
+                               [ rdf:type owl:Restriction ;
+                                 owl:onProperty hecon:hasPace ;
+                                 owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                                 owl:onClass hecon:Pace
+                               ] .
+
+
+###  http://kmi.open.ac.uk/conrad/HECON#Provider
+hecon:Provider rdf:type owl:Class ;
+               rdfs:label "Provider" .
+
+
+###  http://kmi.open.ac.uk/conrad/HECON#RuleExecution
+hecon:RuleExecution rdf:type owl:Class ;
+                    rdfs:subClassOf prov:Activity ,
+                                    [ rdf:type owl:Restriction ;
+                                      owl:onProperty hecon:hasSctSourceConcept ;
+                                      owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                                      owl:onClass sct:
+                                    ] ,
+                                    [ rdf:type owl:Restriction ;
+                                      owl:onProperty hecon:hasSctTargetConcept ;
+                                      owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                                      owl:onClass sct:
+                                    ] .
+
+
+###  http://kmi.open.ac.uk/conrad/HECON#Source
+hecon:Source rdf:type owl:Class ;
+             rdfs:subClassOf prov:Entity ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty hecon:hasProvider ;
+                               owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                               owl:onClass hecon:Provider
+                             ] ;
+             rdfs:comment "Actual source of the text used to extract the CES. The activity used certain source" ;
+             rdfs:label "Source" .
+
+
+###  http://kmi.open.ac.uk/conrad/HECON#Unaffected
+hecon:Unaffected rdf:type owl:Class ;
+                 rdfs:subClassOf hecon:HealthEvolutionStatement .
+
+
+###  http://kmi.open.ac.uk/conrad/HECON#UserStudy
+hecon:UserStudy rdf:type owl:Class ;
+                rdfs:subClassOf prov:Activity .
+
+
+###  http://snomed.info/id/
+sct: rdf:type owl:Class .
+
+
+###  http://www.w3.org/2006/time#Duration
+<http://www.w3.org/2006/time#Duration> rdf:type owl:Class .
+
+
+###  http://www.w3.org/ns/prov#Activity
+prov:Activity rdf:type owl:Class .
+
+
+###  http://www.w3.org/ns/prov#Entity
+prov:Entity rdf:type owl:Class .
+
+
+#################################################################
+#    Individuals
+#################################################################
+
+###  http://kmi.open.ac.uk/conrad/kg/hecon/FAST
+<http://kmi.open.ac.uk/conrad/kg/hecon/FAST> rdf:type owl:NamedIndividual ,
+                                                      hecon:Pace .
+
+
+###  http://kmi.open.ac.uk/conrad/kg/hecon/MAYO
+<http://kmi.open.ac.uk/conrad/kg/hecon/MAYO> rdf:type owl:NamedIndividual ,
+                                                      hecon:Provider ;
+                                             rdfs:comment "MAYO Clinic organisation" ;
+                                             rdfs:label "MAYO Clinic" .
+
+
+###  http://kmi.open.ac.uk/conrad/kg/hecon/MODERATE
+<http://kmi.open.ac.uk/conrad/kg/hecon/MODERATE> rdf:type owl:NamedIndividual ,
+                                                          hecon:Pace .
+
+
+###  http://kmi.open.ac.uk/conrad/kg/hecon/NHS
+<http://kmi.open.ac.uk/conrad/kg/hecon/NHS> rdf:type owl:NamedIndividual ,
+                                                     hecon:Provider ;
+                                            rdfs:comment "NHS England organisation" ;
+                                            rdfs:label "NHS England" .
+
+
+###  http://kmi.open.ac.uk/conrad/kg/hecon/SLOW
+<http://kmi.open.ac.uk/conrad/kg/hecon/SLOW> rdf:type owl:NamedIndividual ,
+                                                      hecon:Pace .
+
+
+###  http://kmi.open.ac.uk/conrad/kg/hecon/ab270431d30ca755300021fdb7af5f5e
+<http://kmi.open.ac.uk/conrad/kg/hecon/ab270431d30ca755300021fdb7af5f5e> rdf:type owl:NamedIndividual ,
+                                                                                  hecon:HealthEvolutionStatement ,
+                                                                                  hecon:Improvement ;
+                                                                         hecon:hasMaxDuration <http://kmi.open.ac.uk/conrad/kg/hecon/2/MONTH> ;
+                                                                         hecon:hasMinDuration <http://kmi.open.ac.uk/conrad/kg/hecon/8/DAY> ;
+                                                                         hecon:hasPace <http://kmi.open.ac.uk/conrad/kg/hecon/MODERATE> ;
+                                                                         hecon:hasSctConcept <http://snomed.info/id/16114001> ;
+                                                                         prov:wasDerivedFrom <http://kmi.open.ac.uk/conrad/kg/hecon/NHS/7c205d8cb4e8941a83a164c9dacf4a88> ;
+                                                                         prov:wasGeneratedBy <http://kmi.open.ac.uk/conrad/kg/hecon/activity/extraction/ab270431d30ca755300021fdb7af5f5e> .
+
+
+###  http://kmi.open.ac.uk/conrad/kg/hecon/2/MONTH
+<http://kmi.open.ac.uk/conrad/kg/hecon/2/MONTH> rdf:type owl:NamedIndividual ,
+                                                         <http://www.w3.org/2006/time#Duration> ;
+                                                <http://www.w3.org/2006/time#numericDuration> 2.0 ;
+                                                <http://www.w3.org/2006/time#unitType> "time:unitMonth" .
+
+
+###  http://kmi.open.ac.uk/conrad/kg/hecon/499920d4bf9dbf0e94bb98bc45f6c23c
+<http://kmi.open.ac.uk/conrad/kg/hecon/499920d4bf9dbf0e94bb98bc45f6c23c> rdf:type owl:NamedIndividual ,
+                                                                                  hecon:HealthEvolutionStatement ,
+                                                                                  hecon:Improvement ;
+                                                                         hecon:hasMaxDuration <http://kmi.open.ac.uk/conrad/kg/hecon/2/MONTH> ;
+                                                                         hecon:hasMinDuration <http://kmi.open.ac.uk/conrad/kg/hecon/8/DAY> ;
+                                                                         hecon:hasPace <http://kmi.open.ac.uk/conrad/kg/hecon/MODERATE> ;
+                                                                         hecon:hasSctConcept <http://snomed.info/id/703470001> ;
+                                                                         prov:wasDerivedFrom <http://kmi.open.ac.uk/conrad/kg/hecon/NHS/8daaf6ba6cb08ec7075bd38702e31a59> ;
+                                                                         prov:wasGeneratedBy <http://kmi.open.ac.uk/conrad/kg/hecon/activity/rule/499920d4bf9dbf0e94bb98bc45f6c23c> .
+
+
+###  http://kmi.open.ac.uk/conrad/kg/hecon/6dd2e0e441573dbc4c49017298bea29a
+<http://kmi.open.ac.uk/conrad/kg/hecon/6dd2e0e441573dbc4c49017298bea29a> rdf:type owl:NamedIndividual ,
+                                                                                  hecon:HealthEvolutionStatement ,
+                                                                                  hecon:Improvement ;
+                                                                         hecon:hasMaxDuration <http://kmi.open.ac.uk/conrad/kg/hecon/2/MONTH> ;
+                                                                         hecon:hasMinDuration <http://kmi.open.ac.uk/conrad/kg/hecon/8/DAY> ;
+                                                                         hecon:hasPace <http://kmi.open.ac.uk/conrad/kg/hecon/MODERATE> ;
+                                                                         hecon:hasSctConcept <http://snomed.info/id/36971009> ;
+                                                                         prov:wasDerivedFrom <http://kmi.open.ac.uk/conrad/kg/hecon/NHS/7c205d8cb4e8941a83a164c9dacf4a88> ;
+                                                                         prov:wasGeneratedBy <http://kmi.open.ac.uk/conrad/kg/hecon/6dd2e0e441573dbc4c49017298bea29a> .
+
+
+###  http://kmi.open.ac.uk/conrad/kg/hecon/8/DAY
+<http://kmi.open.ac.uk/conrad/kg/hecon/8/DAY> rdf:type owl:NamedIndividual ,
+                                                       <http://www.w3.org/2006/time#Duration> ;
+                                              <http://www.w3.org/2006/time#numericDuration> 8.0 ;
+                                              <http://www.w3.org/2006/time#unitType> "time:unitDay" .
+
+
+###  http://kmi.open.ac.uk/conrad/kg/hecon/NHS/537fe28c55ff54ad6af0ed5d035d7cb3
+<http://kmi.open.ac.uk/conrad/kg/hecon/NHS/537fe28c55ff54ad6af0ed5d035d7cb3> rdf:type owl:NamedIndividual ,
+                                                                                      hecon:Source ;
+                                                                             hecon:hasProvider <http://kmi.open.ac.uk/conrad/kg/hecon/NHS> ;
+                                                                             hecon:url "https://www.nhs.uk/conditions/sinusitis-sinus-infection/" .
+
+
+###  http://kmi.open.ac.uk/conrad/kg/hecon/NHS/7c205d8cb4e8941a83a164c9dacf4a88
+<http://kmi.open.ac.uk/conrad/kg/hecon/NHS/7c205d8cb4e8941a83a164c9dacf4a88> rdf:type owl:NamedIndividual ,
+                                                                                      hecon:Source ;
+                                                                             hecon:hasProvider <http://kmi.open.ac.uk/conrad/kg/hecon/NHS> ;
+                                                                             hecon:url "https://www.nhs.uk/conditions/broken-ankle/" ;
+                                                                             rdfs:label "Public Web Sources" .
+
+
+###  http://kmi.open.ac.uk/conrad/kg/hecon/NHS/8daaf6ba6cb08ec7075bd38702e31a59
+<http://kmi.open.ac.uk/conrad/kg/hecon/NHS/8daaf6ba6cb08ec7075bd38702e31a59> rdf:type owl:NamedIndividual ,
+                                                                                      hecon:Source ;
+                                                                             hecon:hasProvider <http://kmi.open.ac.uk/conrad/kg/hecon/NHS> ;
+                                                                             rdfs:label "Knowledge Extraction Data" .
+
+
+###  http://kmi.open.ac.uk/conrad/kg/hecon/activity/extraction/ab270431d30ca755300021fdb7af5f5e
+<http://kmi.open.ac.uk/conrad/kg/hecon/activity/extraction/ab270431d30ca755300021fdb7af5f5e> rdf:type owl:NamedIndividual ,
+                                                                                                      hecon:KnowledgeExtraction ,
+                                                                                                      prov:Activity ;
+                                                                                             prov:Used <http://kmi.open.ac.uk/conrad/kg/hecon/NHS/7c205d8cb4e8941a83a164c9dacf4a88> ;
+                                                                                             hecon:confidenceValue "0.0016"^^xsd:float ;
+                                                                                             hecon:supportValue "1.9E-4"^^xsd:float ;
+                                                                                             rdfs:label "EHC Algorithm - 16114001" .
+
+
+###  http://kmi.open.ac.uk/conrad/kg/hecon/activity/extraction/6dd2e0e441573dbc4c49017298bea29a
+<http://kmi.open.ac.uk/conrad/kg/hecon/activity/extraction/6dd2e0e441573dbc4c49017298bea29a> rdf:type owl:NamedIndividual ,
+                                                                                                      hecon:KnowledgeExtraction ,
+                                                                                                      prov:Activity ;
+                                                                                             prov:Used <http://kmi.open.ac.uk/conrad/kg/hecon/NHS/537fe28c55ff54ad6af0ed5d035d7cb3> ;
+                                                                                             hecon:confidenceValue "0.0016"^^xsd:float ;
+                                                                                             hecon:supportValue "1.9E-4"^^xsd:float ;
+                                                                                             rdfs:label "EHC Algorithm - 36971009" .
+
+
+###  http://kmi.open.ac.uk/conrad/kg/hecon/activity/rule/499920d4bf9dbf0e94bb98bc45f6c23c
+<http://kmi.open.ac.uk/conrad/kg/hecon/activity/rule/499920d4bf9dbf0e94bb98bc45f6c23c> rdf:type owl:NamedIndividual ,
+                                                                                                hecon:RuleExecution ,
+                                                                                                prov:Activity ;
+                                                                                       hecon:hasSctSourceConcept <http://snomed.info/id/36971009> ;
+                                                                                       hecon:hasSctTargetConcept <http://snomed.info/id/703470001> ;
+                                                                                       prov:Used <http://kmi.open.ac.uk/conrad/kg/hecon/NHS/8daaf6ba6cb08ec7075bd38702e31a59> ;
+                                                                                       hecon:ruleSyntax "(*):  ([1..1]{363698007|Finding site (attribute)| = <<2095001|Nasal sinus structure (body structure)|,116676008|Associated morphology (attribute)| = 409774005|Inflammatory morphology (morphologic abnormality)|})&limit=7000\" , \"(*):  ([1..1]{363698007|Finding site (attribute)| = <<20139000|Structure of respiratory system (body structure)|,370135005|Pathological process (attribute)| = 441862004|Infectious process (qualifier value)|})&limit=7000" ;
+                                                                                       rdfs:label "Rule 3 - 703470001" .
+
+
+###  http://snomed.info/id/16114001
+<http://snomed.info/id/16114001> rdf:type owl:NamedIndividual ,
+                                          sct: ;
+                                 rdfs:label "Fracture of ankle" .
+
+
+###  http://snomed.info/id/36971009
+<http://snomed.info/id/36971009> rdf:type owl:NamedIndividual ,
+                                          sct: ;
+                                 rdfs:label "Sinusitis" .
+
+
+###  http://snomed.info/id/64572001
+<http://snomed.info/id/64572001> rdf:type owl:NamedIndividual ,
+                                          hecon:Unaffected ;
+                                 rdfs:label "Clinical finding"@en .
+
+
+###  http://snomed.info/id/65275009
+<http://snomed.info/id/65275009> rdf:type owl:NamedIndividual ,
+                                          hecon:Improvement ;
+                                 hecon:hasPace <http://kmi.open.ac.uk/conrad/kg/hecon/FAST> ;
+                                 rdfs:label "Acute cholecystitis (disorder)"@en .
+
+
+###  http://snomed.info/id/703470001
+<http://snomed.info/id/703470001> rdf:type owl:NamedIndividual ,
+                                           sct: ;
+                                  rdfs:label "Bacterial sinusitis" .
+
+
+#################################################################
+#    Annotations
+#################################################################
+
+sct: rdfs:label "Snomed" .
+
+
+#################################################################
+#    General axioms
+#################################################################
+
+[ rdf:type owl:AllDifferent ;
+  owl:distinctMembers ( <http://kmi.open.ac.uk/conrad/kg/hecon/FAST>
+                        <http://kmi.open.ac.uk/conrad/kg/hecon/MODERATE>
+                      )
+] .
+
+
+[ rdf:type owl:AllDifferent ;
+  owl:distinctMembers ( <http://kmi.open.ac.uk/conrad/kg/hecon/FAST>
+                        <http://kmi.open.ac.uk/conrad/kg/hecon/SLOW>
+                      )
+] .
+
+
+[ rdf:type owl:AllDifferent ;
+  owl:distinctMembers ( <http://kmi.open.ac.uk/conrad/kg/hecon/MAYO>
+                        <http://kmi.open.ac.uk/conrad/kg/hecon/NHS>
+                      )
+] .
+
+
+###  Generated by the OWL API (version 4.5.9.2019-02-01T07:24:44Z) https://github.com/owlcs/owlapi

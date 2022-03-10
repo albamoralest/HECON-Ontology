@@ -1,0 +1,120 @@
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
+PREFIX fx:   <http://sparql.xyz/facade-x/ns/>
+PREFIX xyz:  <http://sparql.xyz/facade-x/data/>
+PREFIX sct: <http://snomed.info/id/>
+PREFIX scton: <http://snomed.info/id#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX hecon: <http://kmi.open.ac.uk/conrad/ontology/hecon#>
+PREFIX ont: <http://kmi.open.ac.uk/conrad/kg/hecon/>
+PREFIX time: <http://www.w3.org/2006/time#>
+
+CONSTRUCT{
+?sct a hecon:Snomed .
+?hes a hecon:HealthEvolutionStatement ;
+    hecon:hasSctConcept ?sct ;
+    prov:wasDerivedFrom ?entSource ;
+    prov:wasGeneratedBy ?entKE .
+?hes a ?eventType ;
+    hecon:hasPace ?paceType ;
+	hecon:hasMinDuration ?minDuration_IRI ;
+    hecon:hasMaxDuration ?maxDuration_IRI .
+?progressEnt a hecon:Progress .
+?minDuration_IRI a time:Duration ;
+    time:numericDuration ?fValue ;
+    time:unitType ?fUnit .
+?maxDuration_IRI a time:Duration ;
+    time:numericDuration ?tValue ;
+    time:unitType ?tUnit .
+?provider a hecon:Provider ;
+	rdfs:label ?providerName .
+?entSource a hecon:Source ;
+    rdfs:label ?aSourceName ;
+    hecon:hasProvider ?provider ;
+    hecon:sentence ?sentenceText ;
+    hecon:url ?urlInfo .
+?entKE a hecon:KnowledgeExtraction ;
+    rdfs:label ?akeName ;
+    hecon:confidenceValue ?confValue ;
+    hecon:supportValue ?supValue .
+?entKE a prov:Activity ;
+	prov:used ?entSource .
+} WHERE {
+    SERVICE <x-sparql-anything:> {
+    	 fx:properties fx:location "rawData/2022-02-07_AllLinkedSnomed.csv" ; fx:csv.headers "true" .
+    {
+    	 [] 
+           xyz:source ?providerName ;
+           xyz:conditionName ?conName ;
+           xyz:L1 ?eventName ;
+           xyz:L2 ?paceName ;
+           xyz:L3 ?timRan ;
+           xyz:snomedIdentifier ?snmdId ;
+           xyz:sentence ?sentenceText ;
+           xyz:confidence ?confidenceVal ;
+           xyz:fromValue ?fVal;
+           xyz:fromUnit ?fUni;
+           xyz:toValue ?tVal;
+           xyz:toUnit ?tUni;
+           xyz:supportCNL1L2L3 ?supportVal 
+           . 
+		   filter (?eventName = "IMPROVE" || ?eventName = "DECLINE") .
+		   BIND ( IF (?eventName = "IMPROVE", hecon:Improvement, IF (?eventName = "DECLINE", hecon:Decline, "")) AS ?eventType) .
+		   BIND ( IF (?eventName = "IMPROVE", hecon:Improvement, IF (?eventName = "DECLINE", hecon:Decline, "")) AS ?progressEnt) .
+		   BIND ( IF (?eventName = "IMPROVE", "Improvement", IF (?eventName = "DECLINE", "Decline", "")) AS ?eventNameUpdate) .
+		   BIND ( IF (?paceName = "FAST", "FAST" , IF (?paceName = "MODERATELY","MODERATE", IF (?paceName = "SLOWLY", "SLOW", ""))) AS ?paceTypeName ) .
+		   BIND ( IRI( CONCAT ( STR (hecon:), ?paceTypeName)) AS ?paceType ) .		
+	   		# Key should not include EHC_Algorithm and sue the same string keys in any other KG construction process
+	   		BIND ( CONCAT (STR (ont:), STR(?snmdId),"/", STR(?providerName), "/", STR (?eventNameUpdate),"/", STR(?paceTypeName), "/", STR (?fVal),"/", STR (?fUni),"/",STR (?tVal),"/",STR(?tUni)) AS ?hesKey) .
+			BIND ( xsd:float ( ?fVal ) AS ?fValue) .
+			BIND ( xsd:float ( ?tVal ) AS ?tValue) .
+		    BIND ( IRI ( CONCAT (STR(ont:), STR(?fVal),"/", STR(?fUni) )) AS ?minDuration_IRI) .
+		    BIND ( IRI ( CONCAT (STR(ont:), STR(?tVal),"/", STR(?tUni))) AS ?maxDuration_IRI) .
+
+			BIND ( IF (?fUni =  "YEAR", time:unitYear, IF (?fUni = "MONTH", time:unitMonth, IF (?fUni = "WEEK", time:unitWeek, IF (?fUni = "DAY", time:unitDay, IF (?fUni = "HOUR", time:unitHour, IF ( ?fUni = "MINUTE", time:unitMinute , IF (?fUni = "SECOND",time:unitSecond,""))))))) AS ?fUnit) .
+			BIND ( IF (?tUni =  "YEAR", time:unitYear, IF (?tUni = "MONTH", time:unitMonth, IF (?tUni = "WEEK", time:unitWeek, IF (?tUni = "DAY", time:unitDay, IF (?tUni = "HOUR", time:unitHour, IF ( ?tUni = "MINUTE", time:unitMinute , IF (?tUni = "SECOND",time:unitSecond,""))))))) AS ?tUnit) .
+		} UNION {
+			# special case for event type PERMANENT and UNAFFECTED. In this case no pace or time range values are created
+       	 [] 
+              xyz:source ?providerName ;
+              xyz:conditionName ?conName ;
+              xyz:L1 ?eventName ;
+              xyz:snomedIdentifier ?snmdId ;
+              xyz:sentence ?sentenceText ;
+              xyz:confidence ?confidenceVal ;
+              xyz:supportCNL1L2L3 ?supportVal 
+              . 
+   		   filter (?eventName = "PERMANENT" || ?eventName = "NOEFFECT") .
+		   BIND ( IF (?eventName = "PERMANENT", hecon:Permanent , hecon:Unaffected) AS ?eventType) .
+		   BIND ( IF (?eventName = "PERMANENT", "Permanent", "") AS ?eventNameUpdate) .
+	   	# Key should not include EHC_Algorithm and sue the same string keys in any other KG construction process
+	   	BIND ( CONCAT (STR (ont:), STR(?snmdId),"/", STR(?providerName), "/", STR (?eventNameUpdate) ) AS ?hesKey) .
+		}
+     
+	# 
+	BIND ( fx:entity (ont: , ?providerName ) AS ?provider ) .
+	BIND ( fx:entity (ont:, ?providerName , "/", fx:DigestUtils.md5Hex(?sentenceText) ) AS ?entSource) .
+
+	BIND ( IRI ( CONCAT (STR(sct:), STR(?snmdId) ) ) AS ?sct ) .
+	BIND ( IRI ( CONCAT (STR(ont:), STR( fx:DigestUtils.md5Hex(?hesKey)))) AS ?hes) .
+	# 
+	BIND ( xsd:float ( ?confidenceVal ) AS ?confValue ) .
+	BIND ( xsd:float ( ?supportVal ) AS ?supValue ) .
+	BIND ( xsd:string ( "Public Web Sources") AS ?aSourceName ) .
+	BIND ( concat ( "EHC Algorithm - ",  ?snmdId ) AS ?akeName ) .
+	BIND ( fx:entity (ont:, "activity/extraction/", fx:DigestUtils.md5Hex(?hesKey) ) AS ?entKE) .
+} 
+
+ # for permanent, same as Type, the triple is omited 
+	SERVICE <x-sparql-anything:> {
+    	 fx:properties fx:location "rawData/conditions_links.csv" ; fx:csv.headers "true" .
+    	 {
+ 	 		[] 
+        	xyz:source ?providerName ;
+        	xyz:url ?urlInfo ;
+        	xyz:conditionName ?conName
+        	. 
+    	} 
+	}
+}
