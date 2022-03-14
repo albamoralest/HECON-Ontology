@@ -1,0 +1,110 @@
+# ====================== QUERY
+PREFIX kg: <http://kmi.open.ac.uk/conrad/kg/hecon/>
+PREFIX sct: <http://snomed.info/id/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX hecon: <http://kmi.open.ac.uk/conrad/ontology/hecon#>
+PREFIX time: <http://www.w3.org/2006/time#>
+
+SELECT DISTINCT ?activity ?sourceName ?provider ?confidenceVal ?supportVal 
+WHERE { 
+  VALUES (?snmdIdentifier) { (sct:36971009) } # sinusitis
+  ?s rdf:type ?typeEvent ;
+     hecon:hasSctConcept ?snmdIdentifier ;
+     prov:wasGeneratedBy ?anActivity_IRI ;
+     prov:wasDerivedFrom ?aSource_IRI .
+  ?anActivity_IRI rdf:type ?activity .
+  ?aSource_IRI rdf:type hecon:Source ;
+               rdfs:label ?sourceName ;
+               hecon:hasProvider ?provider .
+  FILTER ( ?typeEvent != hecon:HealthEvolutionStatement 
+         && ?activity != prov:Activity ) .
+  OPTIONAL { ?anActivity_IRI hecon:confidenceValue ?confidenceVal ;
+           hecon:supportValue ?supportVal .}
+  OPTIONAL {?anActivity_IRI hecon:hasSourceSnmdConcept ?sourceConcept ;
+           hecon:hasTargetSnmdConcept ?targetConcept ;
+           rdfs:label ?ruleName }.
+  OPTIONAL {?s hecon:hasPace ?pace ;
+     hecon:hasMaxDuration ?maxDuration ;
+     hecon:hasMinDuration ?minDuration ; }
+} ORDER BY ?snmdIdentifier DESC ( ?confidenceVal ) 
+
+
+# ======================== RESULTS
+activity	sourceName	provider	confidenceVal	supportVal
+hecon:KnowledgeExtraction	Public Web Sources	kg:NHS	0.008264462	1.9327406E-4
+hecon:KnowledgeExtraction	Public Web Sources	kg:NHS	0.001618123	1.9327406E-4
+hecon:KnowledgeExtraction	Public Web Sources	kg:NHS	0.0011520737	1.9327406E-4
+hecon:RuleExecution	Knowledge Extraction Data	kg:NHS		
+
+
+# =======================
+# =======================
+# SNOMED CT identifiers from Table 5. 
+# Morales Tirado, A.C., Daga, E., Motta, E.: Reasoning on health condition evolution
+# for enhanced detection of vulnerable people in emergency settings. In: Proceedings
+# of the 11th on KCAP (2021)
+# Abdominal aortic aneurysm (disorder) 233985008
+# Abdominal aortic aneurysm screening (procedure) 698356002
+# Chronic obstructive lung disease (disorder) 13645005
+# Cyst of ovary (disorder) 79883001
+
+PREFIX kg: <http://kmi.open.ac.uk/conrad/kg/hecon/>
+PREFIX sct: <http://snomed.info/id/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX hecon: <http://kmi.open.ac.uk/conrad/ontology/hecon#>
+PREFIX time: <http://www.w3.org/2006/time#>
+
+SELECT DISTINCT ?activity ?sourceName ?provider ?confidenceVal ?supportVal 
+WHERE { 
+  VALUES (?snmdIdentifier) { (sct:233985008) (sct:698356002) (sct:13645005) (sct:79883001) } 
+  ?s rdf:type ?typeEvent ;
+     hecon:hasSctConcept ?snmdIdentifier ;
+     prov:wasGeneratedBy ?anActivity_IRI ;
+     prov:wasDerivedFrom ?aSource_IRI .
+  ?anActivity_IRI rdf:type ?activity .
+  ?aSource_IRI rdf:type hecon:Source ;
+               rdfs:label ?sourceName ;
+               hecon:hasProvider ?provider .
+  FILTER ( ?typeEvent != hecon:HealthEvolutionStatement 
+         && ?activity != prov:Activity ) .
+  OPTIONAL { ?anActivity_IRI hecon:confidenceValue ?confidenceVal ;
+           hecon:supportValue ?supportVal .}
+  OPTIONAL {?anActivity_IRI hecon:hasSourceSnmdConcept ?sourceConcept ;
+           hecon:hasTargetSnmdConcept ?targetConcept ;
+           rdfs:label ?ruleName }.
+  OPTIONAL {?s hecon:hasPace ?pace ;
+     hecon:hasMaxDuration ?maxDuration ;
+     hecon:hasMinDuration ?minDuration ; }
+} ORDER BY ?snmdIdentifier DESC ( ?confidenceVal ) 
+
+# results for (sct:233985008)
+activity	sourceName	provider	confidenceVal	supportVal
+hecon:KnowledgeExtraction	Public Web Sources	kg:MAYO	0.003236246	3.865481E-4
+hecon:KnowledgeExtraction	Public Web Sources	kg:NHS	0.002570694	1.9327406E-4
+hecon:RuleExecution	Knowledge Extraction Data	kg:MAYO		
+hecon:RuleExecution	Knowledge Extraction Data	kg:NHS		
+
+# results for (sct:698356002)
+activity	sourceName	provider	confidenceVal	supportVal
+hecon:KnowledgeExtraction	Public Web Sources	kg:NHS	0.002072539	3.865481E-4
+hecon:KnowledgeExtraction	Public Web Sources	kg:NHS	0.0011520737	1.9327406E-4
+hecon:RuleExecution	Knowledge Extraction Data	kg:NHS		
+
+# results for (sct:13645005)
+activity	sourceName	provider	confidenceVal	supportVal
+hecon:KnowledgeExtraction	Public Web Sources	kg:MAYO	0.003690037	1.9327406E-4
+hecon:KnowledgeExtraction	Public Web Sources	kg:MAYO	0.0036231885	1.9327406E-4
+hecon:KnowledgeExtraction	Public Web Sources	kg:NHS	0.0034562212	5.7982217E-4
+hecon:KnowledgeExtraction	Public Web Sources	kg:MAYO	0.0031088083	5.7982217E-4	
+hecon:RuleExecution	Knowledge Extraction Data	kg:MAYO		
+hecon:RuleExecution	Knowledge Extraction Data	kg:NHS	
+
+# results for (sct:79883001)
+
+activity	sourceName	provider	confidenceVal	supportVal
+hecon:KnowledgeExtraction	Public Web Sources	kg:NHS	0.008264462	1.9327406E-4
+hecon:KnowledgeExtraction	Public Web Sources	kg:NHS	0.007246377	3.865481E-4
+hecon:KnowledgeExtraction	Public Web Sources	kg:NHS	0.005141388	3.865481E-4
+hecon:KnowledgeExtraction	Public Web Sources	kg:MAYO	0.0011520737	1.9327406E-4	
+hecon:RuleExecution	Knowledge Extraction Data	kg:NHS		
+hecon:RuleExecution	Knowledge Extraction Data	kg:MAYO			

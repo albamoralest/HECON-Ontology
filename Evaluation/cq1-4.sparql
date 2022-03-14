@@ -1,0 +1,79 @@
+# ====================== QUERY
+prefix kg: <http://kmi.open.ac.uk/conrad/kg/hecon/>
+prefix sct: <http://snomed.info/id/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+prefix hecon: <http://kmi.open.ac.uk/conrad/ontology/hecon#>
+PREFIX time: <http://www.w3.org/2006/time#>
+
+SELECT DISTINCT ?snmdIdentifier ?typeEvent ?pace ?maxDuration ?minDuration
+FROM <http://conrad.kmi.open.ac.uk/hecon/kg/HES>
+WHERE {
+  VALUES (?snmdIdentifier) { (sct:46866001)  }# leg fracture
+  ?s rdf:type ?typeEvent ;
+     hecon:hasSctConcept ?snmdIdentifier ;
+     prov:wasGeneratedBy ?anActivity_IRI .
+  ?anActivity_IRI rdf:type hecon:KnowledgeExtraction .
+  FILTER ( ?typeEvent != hecon:HealthEvolutionStatement) .
+  OPTIONAL { ?anActivity_IRI hecon:confidenceValue ?confidenceVal } .
+  OPTIONAL {?s hecon:hasPace ?pace ;
+       hecon:hasMaxDuration ?maxDuration ;
+       hecon:hasMinDuration ?minDuration ; }
+} ORDER BY ?snmdIdentifier DESC ( ?confidenceVal )
+
+
+# ======================== RESULTS
+
+snmdIdentifier	typeEvent	pace	maxDuration	minDuration
+sct:46866001	hecon:Improvement	hecon:MODERATE	kg:1/YEAR	kg:6/MONTH
+sct:46866001	hecon:Improvement	hecon:SLOW	kg:6/MONTH	kg:2/MONTH
+sct:46866001	hecon:Improvement	hecon:MODERATE	kg:6/MONTH	kg:2/MONTH
+sct:46866001	hecon:Improvement	hecon:MODERATE	kg:2/MONTH	kg:8/DAY
+
+
+# =======================
+# =======================
+# SNOMED CT identifiers from Table 5. 
+# Morales Tirado, A.C., Daga, E., Motta, E.: Reasoning on health condition evolution
+# for enhanced detection of vulnerable people in emergency settings. In: Proceedings
+# of the 11th on KCAP (2021)
+# Abdominal aortic aneurysm (disorder) 233985008
+# Abdominal aortic aneurysm screening (procedure) 698356002
+# Chronic obstructive lung disease (disorder) 13645005
+# Cyst of ovary (disorder) 79883001
+
+prefix kg: <http://kmi.open.ac.uk/conrad/kg/hecon/>
+prefix sct: <http://snomed.info/id/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+prefix hecon: <http://kmi.open.ac.uk/conrad/ontology/hecon#>
+PREFIX time: <http://www.w3.org/2006/time#>
+
+SELECT DISTINCT ?snmdIdentifier ?typeEvent ?pace ?maxDuration ?minDuration
+FROM <http://conrad.kmi.open.ac.uk/hecon/kg/HES>
+WHERE {
+  VALUES (?snmdIdentifier) { (sct:233985008) (sct:698356002) (sct:13645005) (sct:79883001) }
+  ?s rdf:type ?typeEvent ;
+     hecon:hasSctConcept ?snmdIdentifier ;
+     prov:wasGeneratedBy ?anActivity_IRI .
+  ?anActivity_IRI rdf:type hecon:KnowledgeExtraction .
+  FILTER ( ?typeEvent != hecon:HealthEvolutionStatement) .
+  OPTIONAL { ?anActivity_IRI hecon:confidenceValue ?confidenceVal } .
+  OPTIONAL {?s hecon:hasPace ?pace ;
+       hecon:hasMaxDuration ?maxDuration ;
+       hecon:hasMinDuration ?minDuration ; }
+} ORDER BY ?snmdIdentifier DESC ( ?confidenceVal )
+
+# RESULTS
+
+snmdIdentifier	typeEvent	pace	maxDuration	minDuration
+sct:13645005	hecon:Decline	hecon:SLOW	kg:MORE/YEAR	kg:1/YEAR
+sct:13645005	hecon:Improvement	hecon:FAST	kg:1/WEEK	kg:1/DAY
+sct:13645005	hecon:Permanent			
+sct:13645005	hecon:Improvement	hecon:FAST	kg:1/DAY	kg:5/MINUTE
+sct:233985008	hecon:Improvement	hecon:MODERATE	kg:2/MONTH	kg:8/DAY
+sct:233985008	hecon:Improvement	hecon:MODERATE	kg:6/MONTH	kg:2/MONTH
+sct:698356002	hecon:Improvement	hecon:FAST	kg:1/DAY	kg:5/MINUTE
+sct:698356002	hecon:Permanent			
+sct:79883001	hecon:Improvement	hecon:SLOW	kg:6/MONTH	kg:2/MONTH
+sct:79883001	hecon:Improvement	hecon:FAST	kg:1/WEEK	kg:1/DAY
+sct:79883001	hecon:Improvement	hecon:MODERATE	kg:6/MONTH	kg:2/MONTH
+sct:79883001	hecon:Permanent			
