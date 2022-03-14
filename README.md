@@ -16,4 +16,7 @@ Repository content:
 
 3. Ontology Evaluation data in folder:
 		 Evaluation
+		 	cq1-4.sparql -> SPARQL query and results for competency questions 1 to 4.
+			cq5-7.sparql -> SPARQL query and results for competency questions 5 to 7.
+			cq8-11.sparql -> SPARQL query and results for competency questions 8 to 11.
  
