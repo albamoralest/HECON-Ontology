@@ -1,0 +1,102 @@
+# ====================== QUERY
+PREFIX EHR: <http://conrad.kmi.open.ac.uk/hecon/kg/EHR/>
+PREFIX hecon: <http://kmi.open.ac.uk/conrad/ontology/hecon#>
+PREFIX fhir: <http://hl7.org/fhir/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX snomed: <http://kmi.open.ac.uk/emergency/SNOMED-TV/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX time: <http://www.w3.org/2006/time#>
+
+SELECT  ?patientId ?snmdIdentifier ?reasonDescription ?typeEvent ?pace ?startDate 
+?fireEvent ?days ?minDurationValue ?minDurationUnit ?maxDurationValue ?maxDurationUnit
+FROM <http://conrad.kmi.open.ac.uk/hecon/kg/EHR>
+WHERE {   
+  VALUES (?patientId) 
+  { ( <http://kmi.open.ac.uk/emergency/hr/618e8418-9eb9-42f2-9905-617649e99c13> ) }
+  {?id fhir:Patient.identifier ?patientId ;
+		fhir:Condition.period ?blankNode ;
+		fhir:Condition.codeableConcept ?reasonBlank .
+    ?blankNode fhir:Period.start ?startDate ;
+		fhir:Period.end ?endDate .
+    ?reasonBlank skos:inScheme ?snmdIdentifier ;
+		fhir:CodeableConcept.text ?reasonDescription .
+  }.{
+    GRAPH <http://conrad.kmi.open.ac.uk/hecon/kg/HES>{
+      ?s rdf:type ?typeEvent ;
+         hecon:hasSctConcept ?snmdIdentifier ;
+         prov:wasGeneratedBy ?anActivity_IRI .
+      ?anActivity_IRI rdf:type hecon:KnowledgeExtraction .
+      FILTER ( ?typeEvent != hecon:HealthEvolutionStatement) .
+      OPTIONAL { ?anActivity_IRI hecon:confidenceValue ?confidenceVal } .
+      OPTIONAL {?s hecon:hasPace ?pace ;
+                   hecon:hasMaxDuration ?maxDuration_IRI ;
+                   hecon:hasMinDuration ?minDuration_IRI . 
+                ?maxDuration_IRI time:numericDuration ?maxDurationValue ;
+                                 time:unitType ?maxDurationUnit .
+                ?minDuration_IRI time:numericDuration ?minDurationValue ;
+                                 time:unitType ?minDurationUnit . }
+    }
+  }BIND ( "2019-10-17"^^<http://www.w3.org/2001/XMLSchema#dateTime> AS ?fireEvent ) .
+  BIND ((?fireEvent)-(?startDate) AS ?days).
+}ORDER  BY DESC ( ?confidenceVal )
+
+
+
+
+
+
+
+
+
+prefix hecon: <http://kmi.open.ac.uk/conrad/ontology/hecon#>
+prefix fhir: <http://hl7.org/fhir/>
+prefix skos: <http://www.w3.org/2004/02/skos/core#>
+prefix snomed: <http://kmi.open.ac.uk/emergency/SNOMED-TV/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX time: <http://www.w3.org/2006/time#>
+
+SELECT  ?patientId ?snmdIdentifier ?reasonDescription ?typeEvent ?pace ?startDate 
+?fireEvent ?days ?minDurationValue ?minDurationUnit ?maxDurationValue ?maxDurationUnit ?confidence
+FROM <http://conrad.kmi.open.ac.uk/hecon/kg/EHR>
+WHERE {   
+  VALUES (?patientId) 
+  { ( <http://kmi.open.ac.uk/emergency/hr/618e8418-9eb9-42f2-9905-617649e99c13> ) }
+  {
+    ?id fhir:Patient.identifier ?patientId ;
+		fhir:Condition.period ?blankNode ;
+		fhir:Condition.codeableConcept ?reasonBlank .
+    ?blankNode fhir:Period.start ?startDate ;
+		fhir:Period.end ?endDate .
+    ?reasonBlank skos:inScheme ?snmdIdentifier ;
+		fhir:CodeableConcept.text ?reasonDescription .
+    {
+      SELECT  ?snmdIdentifier ?typeEvent ?pace ?minDurationValue ?minDurationUnit ?maxDurationValue ?maxDurationUnit (MAX (?confidenceVal) AS ?confidence)
+      WHERE {
+        GRAPH <http://conrad.kmi.open.ac.uk/hecon/kg/HES>
+        {
+          ?s rdf:type ?typeEvent ;
+             hecon:hasSctConcept ?snmdIdentifier ;
+             prov:wasGeneratedBy ?anActivity_IRI .
+          ?anActivity_IRI rdf:type hecon:KnowledgeExtraction .
+          FILTER ( ?typeEvent != hecon:HealthEvolutionStatement) .
+          OPTIONAL { ?anActivity_IRI hecon:confidenceValue ?confidenceVal } .
+          OPTIONAL {?s hecon:hasPace ?pace ;
+                       hecon:hasMaxDuration ?maxDuration_IRI ;
+                       hecon:hasMinDuration ?minDuration_IRI . 
+                    ?maxDuration_IRI time:numericDuration ?maxDurationValue ;
+                                     time:unitType ?maxDurationUnit .
+                    ?minDuration_IRI time:numericDuration ?minDurationValue ;
+                                     time:unitType ?minDurationUnit . }
+          }
+      }
+      GROUP BY ?snmdIdentifier ?typeEvent ?pace ?minDurationValue ?minDurationUnit ?maxDurationValue ?maxDurationUnit
+      #LIMIT 1
+    } 
+  }
+  BIND ( "2019-10-17"^^<http://www.w3.org/2001/XMLSchema#dateTime> AS ?fireEvent ) .
+  BIND ((?fireEvent)-(?startDate) AS ?days).
+}ORDER  BY DESC ( ?confidenceVal )
+
+
+
+# ======================== RESULTS
